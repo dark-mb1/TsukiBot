@@ -185,8 +185,8 @@ const clientPoloniex      = new ccxt.poloniex();
 const clientBinance       = new ccxt.binance();
 const clientBittrex       = new ccxt.bittrex();
 const clientBitfinex      = new ccxt.bitfinex2();
-const clientCoinbase      = new ccxt.coinbase();
-let clientcmc;            //Will be initialied upon bot bootup
+const clientCoinbase      = new ccxt.coinbasepro();
+let clientcmc;            //Will be initialized upon bot bootup
 
 // Reload Coins
 const reloader            = require('./getCoins');
@@ -2279,7 +2279,7 @@ function commands(message, botAdmin, config){
         
         return !isNaN(value) || pairs.indexOf(value.toUpperCase()) > -1;
       });
-      
+
       // Keeping the pad
       params.unshift('0');
       if(config.indexOf(command) === -1 && (params.length > 1 || ['cg', 'coingecko', 'translate', 'trans', 't', 'shortcut', 'subrole', 'sub', 'mc', 'stocks', 'stock', 'info'
@@ -2347,9 +2347,9 @@ function commands(message, botAdmin, config){
             }
 
           // Configure personal array
-        } else if( /pa[\+\-]?/.test(command)){
+        } else if( /pa[\+\-]?/.test(command.toLowerCase)){
           let action = command[2] || '';
-          params.splice(0,1);
+          params.toLowerCase.splice(0,1);
 
           params.map(function(x){ return x.toUpperCase(); });
           getCoinArray(message.author.id, channel, message, params, action);
