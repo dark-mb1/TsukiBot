@@ -21,22 +21,22 @@ let cmcArrayDict = '';
 
  ---------------------------------- */
 
- async function getCMCData(){
+async function getCMCData() {
     //WARNING! This will pull ALL cmc coins and cost you about 11 credits on your api account!
-    let cmcJSON = await clientcmc.getTickers({limit: 2800}).then().catch(console.error);
+    let cmcJSON = await clientcmc.getTickers({ limit: 4200 }).then().catch(console.error);
     cmcArray = cmcJSON['data'];
     cmcArrayDictParsed = cmcArray;
     cmcArrayDict = {};
     try {
-        cmcArray.forEach(function(v){
-      if(!cmcArrayDict[v.symbol])
-        cmcArrayDict[v.symbol] = v;
-    });
-    } catch (err) { 
-      console.error(chalk.red.bold("failed to get cmc dictionary for metadata caching!" ));
+        cmcArray.forEach(function (v) {
+            if (!cmcArrayDict[v.symbol])
+                cmcArrayDict[v.symbol] = v;
+        });
+    } catch (err) {
+        console.error(chalk.red.bold("failed to get cmc dictionary for metadata caching!"));
     }
     //console.log(chalk.green(chalk.cyan(cmcArray.length) + " CMC tickers updated!"));
-  }
+}
 
 
 
@@ -59,19 +59,21 @@ function getCMCMetaData() {
 
     for (let i = 1; i !== numberOfCoins + 1; i++) {
         setTimeout(function timer() {
-            let key = cmcArrayDictParsed[i-1];
+            let key = cmcArrayDictParsed[i - 1];
             //console.log(key);
-            clientcmc.getMetadata({id: key.id}).then(function (metaJSON) {
+            clientcmc.getMetadata({ id: key.id }).then(function (metaJSON) {
                 //console.log(metaJSON);
                 let data = {
+                    id: key.id,
                     coin: key.symbol,
                     name: key.name,
                     slug: key.slug,
                     logo: metaJSON.data[key.id].logo,
-                    description: metaJSON.data[key.id].description
+                    description: metaJSON.data[key.id].description,
+                    links: metaJSON.data[key.id]["urls"]
                 };
                 meta['data'].push(data);
-                console.log(chalk.blue("COMPLETED " + i + " OF " + numberOfCoins));
+                console.log(chalk.blue("COMPLETED " + chalk.cyan(i) + " OF " + chalk.cyan(numberOfCoins)));
             }).catch(console.error);
 
             if (i === numberOfCoins) {
@@ -82,17 +84,17 @@ function getCMCMetaData() {
 }
 
 function soupTime() {
-    console.log(meta);
+    //console.log(meta);
     fs.writeFile("./common/metadata.json", JSON.stringify(meta), function (err) {
         if (err)
             return console.log(err);
     });
-    console.log(chalk.cyan("Operation completed successfully!"));
+    console.log(chalk.greenBright("Operation completed successfully!"));
 }
 
 // run the functions
 getCMCData();
 console.log(chalk.blue("Starting caching process, please wait.."));
-setTimeout(function(){
+setTimeout(function () {
     getCMCMetaData();
 }, 5000);

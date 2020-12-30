@@ -10,8 +10,10 @@ common/help.json
 common/keys.api
 common/serverPerms.json
 common/shortcuts.json
+common/metadata.json
 .DS_Store
 stuff
 graviex
 .vs
 
+.jshintrc
